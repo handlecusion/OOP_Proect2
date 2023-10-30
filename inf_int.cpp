@@ -3,8 +3,9 @@
 
 inf_int::inf_int()
 {
-	digits = new char[1];
+	digits = new char[2];
 	digits[0] = '0';
+	digits[1] = 0;
 	length = 1;
 	thesign = true;
 }
@@ -92,66 +93,77 @@ inf_int& inf_int::operator=(const inf_int& ii)
 	return (*this);
 }
 
+inf_int operator+(const inf_int& li, const inf_int& ri) {
+    inf_int result;
+    int max_len = (li.length > ri.length) ? li.length : ri.length;
+    char* sum = nullptr;
+    try {
+        sum = new char[max_len + 2]; // +1 for potential carry, +1 for '\0'
+    } catch (std::bad_alloc&) {
+        std::cerr << "Memory allocation failed for sum in operator+." << std::endl;
+        exit(1);
+    }
 
-//inf_int operator+(const inf_int& lhs, const inf_int& rhs) {
-//    if (!lhs.thesign && !rhs.thesign) { // Both numbers are negative
-//        inf_int abs_lhs = lhs;
-//        abs_lhs.thesign = true;
-//        inf_int abs_rhs = rhs;
-//        abs_rhs.thesign = true;
-//        inf_int result = abs_lhs + abs_rhs;
-//        result.thesign = false;
-//        return result;
-//    } else if (!lhs.thesign) { // lhs is negative
-//        inf_int abs_lhs = lhs;
-//        abs_lhs.thesign = true;
-//        return rhs - abs_lhs;
-//    } else if (!rhs.thesign) { // rhs is negative
-//        inf_int abs_rhs = rhs;
-//        abs_rhs.thesign = true;
-//        return lhs - abs_rhs;
-//    }
-//    
-//    // Now, we know both numbers are positive.
-//    inf_int result;
-//
-//    int len_lhs = lhs.length;
-//    int len_rhs = rhs.length;
-//    int max_len = (len_lhs > len_rhs) ? len_lhs : len_rhs;
-//
-//    char* sum = nullptr;
-//    
-//    try {
-//        sum = new char[max_len + 2](); // +1 for potential carry, +1 for '\0'
-//    } catch (std::bad_alloc&) {
-//        std::cerr << "Memory allocation failed for sum in operator+." << std::endl;
-//        exit(1);
-//    }
-//
-//    int carry = 0;
-//
-//    for (int i = 0; i < max_len; i++) {
-//        int digit_lhs = (i < len_lhs) ? lhs.digits[i] - '0' : 0;
-//        int digit_rhs = (i < len_rhs) ? rhs.digits[i] - '0' : 0;
-//
-//        int current_sum = digit_lhs + digit_rhs + carry;
-//        sum[i] = (current_sum % 10) + '0';
-//        
-//        carry = current_sum / 10;
-//    }
-//
-//    if (carry) {
-//        sum[max_len] = carry + '0';
-//        max_len++;
-//    }
-//    sum[max_len] = '\0';
-//
-//    result.digits = sum;
-//    result.length = max_len;
-//    result.thesign = true;
-//
-//    return result;
-//}
+    int carry = 0;
+    for (int i = 0; i < max_len; i++)
+	{
+        int digit_l = li.thesign * ((i < li.length) ? li.digits[i] - '0' : 0);
+        int digit_r = ri.thesign * ((i < ri.length) ? ri.digits[i] - '0' : 0);
+
+        int current = digit_l + digit_r + carry;
+        sum[i] = (current % 10) + '0';
+        carry = current / 10;
+    }
+    if (carry)
+        sum[max_len++] = carry + '0';
+	else
+	{
+		cout << "exception no carry:";
+	}
+    sum[max_len] = '\0';
+
+    result.digits = sum;
+    result.length = max_len;
+    result.thesign = true;
+
+    return result;
+}
+
+bool operator==(const inf_int& a, const inf_int& b)
+{
+	if (a.thesign != b.thesign) 
+	{
+		return false;
+	}
+	if (strcmp(a.digits, b.digits) != 0) 
+	{
+		return false;
+	}
+	return true;
+}
+
+bool operator!=(const inf_int& a, const inf_int& b)
+{
+	return !operator==(a, b);
+}
+
+bool operator>(const inf_int& a, const inf_int& b)
+{
+	if (a.thesign != b.thesign)
+	{
+		return a.thesign;
+	}
+	if (a.thesign)
+	{
+		return strcmp(a.digits, b.digits) > 0;
+	}
+	return strcmp(a.digits, b.digits) < 0;
+}
+
+bool operator<(const inf_int& a, const inf_int& b)
+{
+	return !operator>(a, b);
+}
 
 ostream& operator<<(ostream& out, const inf_int& num)
 {
@@ -162,7 +174,6 @@ ostream& operator<<(ostream& out, const inf_int& num)
 	p[l] = 0;
 	if (!num.thesign)
 		p[i++] = '-';
-	
 	while (i < l)
 	{
 		p[i] = num.digits[l - i - 1];
