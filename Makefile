@@ -1,4 +1,4 @@
-NAME = a.exe
+NAME = prob2.exe
 CC = g++
 CFLAGS = 
 SRCS = main.cpp inf_int.cpp
