@@ -11,7 +11,7 @@ int main()
 	inf_int a, e;
 	inf_int b(100);
 	inf_int c("321111111111122222222222233333333333444444444445");
-	inf_int d("-200");
+	inf_int d("200");
 	inf_int f=d;
 	inf_int g(f);
 
@@ -31,7 +31,7 @@ int main()
 		cout << "e : " << e << endl;
 		cout << "f : " << f << endl;
 		cout << "g : " << g << endl;
-		cout << "b + d : " << b + d << endl;
+		cout << "b - d : " << b - d << endl;
 	}
 	return 0;
 }

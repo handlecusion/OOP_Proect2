@@ -27,13 +27,15 @@ public :
 
     inf_int& operator=(const inf_int&); // assignment operator
 
+	void ch_sign();
+
     friend bool operator==(const inf_int& , const inf_int&);
     friend bool operator!=(const inf_int& , const inf_int&);
     friend bool operator>(const inf_int& , const inf_int&);
     friend bool operator<(const inf_int& , const inf_int&);
 
     friend inf_int operator+(const inf_int& , const inf_int&);
-//    friend inf_int operator-(const inf_int& , const inf_int&);
+    friend inf_int operator-(const inf_int& , const inf_int&);
 //    friend inf_int operator*(const inf_int& , const inf_int&);
 
     // friend inf_int operator/(const inf_int& , const inf_int&); // not required

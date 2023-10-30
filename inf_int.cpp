@@ -93,9 +93,18 @@ inf_int& inf_int::operator=(const inf_int& ii)
 	return (*this);
 }
 
-inf_int operator+(const inf_int& li, const inf_int& ri) {
+void inf_int::ch_sign()
+{
+	thesign = !thesign;
+}
+
+inf_int operator+(const inf_int& li, const inf_int& ri)
+{
     inf_int result;
     int max_len = (li.length > ri.length) ? li.length : ri.length;
+	bool sign = true;
+	int	sign_l = (li.thesign) ? 1 : -1;
+	int sign_r = (ri.thesign) ? 1 : -1;
     char* sum = nullptr;
     try {
         sum = new char[max_len + 2]; // +1 for potential carry, +1 for '\0'
@@ -107,10 +116,17 @@ inf_int operator+(const inf_int& li, const inf_int& ri) {
     int carry = 0;
     for (int i = 0; i < max_len; i++)
 	{
-        int digit_l = li.thesign * ((i < li.length) ? li.digits[i] - '0' : 0);
-        int digit_r = ri.thesign * ((i < ri.length) ? ri.digits[i] - '0' : 0);
+        int digit_l = sign_l * ((i < li.length) ? li.digits[i] - '0' : 0);
+        int digit_r = sign_r * ((i < ri.length) ? ri.digits[i] - '0' : 0);
 
         int current = digit_l + digit_r + carry;
+		if (current < 0)
+		{
+			current *= -1;
+			sign = false;
+		}
+		else
+			sign = true;
         sum[i] = (current % 10) + '0';
         carry = current / 10;
     }
@@ -124,9 +140,16 @@ inf_int operator+(const inf_int& li, const inf_int& ri) {
 
     result.digits = sum;
     result.length = max_len;
-    result.thesign = true;
+	result.thesign = sign;
 
-    return result;
+    return (result);
+}
+
+inf_int operator-(const inf_int& li, const inf_int& ri)
+{
+	inf_int r = ri;
+	r.ch_sign();
+	return (li + r);
 }
 
 bool operator==(const inf_int& a, const inf_int& b)
@@ -167,9 +190,9 @@ bool operator<(const inf_int& a, const inf_int& b)
 
 ostream& operator<<(ostream& out, const inf_int& num)
 {
-	char*	p = new char[num.length + ((num.thesign) ? 0 : 1) + 1];
+	char*	p = new char[num.length + !num.thesign];
 	int		i = 0;
-	int		l = num.length + ((num.thesign) ? 0 : 1);
+	int		l = num.length + !num.thesign;
 
 	p[l] = 0;
 	if (!num.thesign)
