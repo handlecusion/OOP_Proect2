@@ -61,20 +61,36 @@ inf_int::inf_int (const char* str)
 		digits[len - i - 1] = str[i];
 }
 
-//inf_int::inf_int(const inf_int&)
-//{
-//	// copy constructor
-//}
-//
-//inf_int::~inf_int()
-//{
-//	delete(digits);
-//}
-//
-//inf_int& inf_int::operator=(const inf_int&)
-//{
-//	//
-//}
+inf_int::inf_int(const inf_int& ii)
+{
+	length = ii.length;
+	thesign = ii.thesign;
+	digits = new char[length + 1];
+
+	for (int i = 0; i < length; i++)
+		digits[i] = ii.digits[i];
+
+	digits[length] = 0;
+}
+
+inf_int::~inf_int()
+{
+	delete(digits);
+}
+
+inf_int& inf_int::operator=(const inf_int& ii)
+{
+	length = ii.length;
+	thesign = ii.thesign;
+	digits = new char[length + 1];
+
+	for (int i = 0; i < length; i++)
+		digits[i] = ii.digits[i];
+
+	digits[length] = 0;
+
+	return (*this);
+}
 
 
 //inf_int operator+(const inf_int& lhs, const inf_int& rhs) {
